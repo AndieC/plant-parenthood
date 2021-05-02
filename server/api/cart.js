@@ -94,8 +94,9 @@ router.put('/:orderId', async (req, res, next) => {
     const activeOrder = await Order.findByPk(req.params.orderId)
     let products = await activeOrder.getProducts()
     for (let i = 0; i < products.length; i++) {
-      let currentProduct = await Product.findByPk(products[i].id)
-      currentProduct.update({inventory: products[i].inventory--})
+      let product = await Product.findByPk(products[i].id)
+      product.inventory--
+      product.save()
     }
     res.send(await activeOrder.update({status: 'completed'}))
   } catch (error) {
